@@ -81,6 +81,30 @@ The **if** tag has complimentary **elif** and **else** tags. There can be as man
 
     {{#if Male}}Mr.{{#elif Married}}Mrs.{{#else}}Ms.{{/if}}
 
+## The 'eq' tag
+The **eq** tag allows you to conditionally include a block of text, by comparing if two values are equal.
+
+    {{#eq Name UserName}}Hello {{Name}} !!!{{/eq}}
+
+The block will be printed if:
+* Both values are null
+* Both values are strings, and are equal (case insensitive)
+* Both values are integers or doubles, and are equal
+* Both values are boolean, and are equal
+
+## The 'lt' tag
+The **lt** tag allows you to conditionally include a block of text, by comparing if two values are equal.
+
+    <span {{#lt Budget BudgetLimit}} class="overBudget" {{/lt}}>{{Budget}}</span>
+
+	
+The block will be printed if:
+* Both values are integers or doubles, and the first value is less than the second
+
+## The 'lte', 'gt', 'gte' tags
+These tags work in the same way as the 'lt' tag, ('lte' = less than or equal to).
+
+	
 ## The 'each' tag
 If you need to print out a block of text for each item in a collection, use the **each** tag.
 
