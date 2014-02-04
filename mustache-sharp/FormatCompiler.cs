@@ -41,8 +41,17 @@ namespace Mustache
             _tagLookup.Add(newlineDefinition.Name, newlineDefinition);
             SetTagDefinition setDefinition = new SetTagDefinition();
             _tagLookup.Add(setDefinition.Name, setDefinition);
+
             EqTagDefinition eqTagDefinition = new EqTagDefinition();
             _tagLookup.Add(eqTagDefinition.Name,eqTagDefinition);
+            GtTagDefinition gtTagDefinition = new GtTagDefinition();
+            _tagLookup.Add(gtTagDefinition.Name,gtTagDefinition);
+            LtTagDefinition ltTagDefinition = new LtTagDefinition();
+            _tagLookup.Add(ltTagDefinition.Name, ltTagDefinition);
+            GteTagDefinition gteTagDefinition = new GteTagDefinition();
+            _tagLookup.Add(gteTagDefinition.Name, gteTagDefinition);
+            LteTagDefinition lteTagDefinition = new LteTagDefinition();
+            _tagLookup.Add(lteTagDefinition.Name, lteTagDefinition);
 
         }
 

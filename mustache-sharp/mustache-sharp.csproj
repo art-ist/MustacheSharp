@@ -40,7 +40,11 @@
     <Compile Include="ContentTagDefinition.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="ContextParameter.cs" />
+    <Compile Include="LteTagDefinition.cs" />
+    <Compile Include="GteTagDefinition.cs" />
+    <Compile Include="LtTagDefinition.cs" />
     <Compile Include="EqTagDefinition.cs" />
+    <Compile Include="GtTagDefinition.cs" />
     <Compile Include="VariableFoundEventArgs.cs" />
     <Compile Include="SetTagDefinition.cs" />
     <Compile Include="NewlineTagDefinition.cs" />

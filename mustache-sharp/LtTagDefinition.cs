@@ -1,40 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Mustache {
     /// <summary>
     /// Defines a tag that conditionally prints its content, based on whether the passed in values are equal
     /// </summary>
-    internal sealed class EqTagDefinition : ConditionTagDefinition {
+    internal sealed class LtTagDefinition : ConditionTagDefinition {
         private const string ConditionParameter = "condition";
         private const string TargetValueParameter = "targetValue";
 
-         /// <summary>
+        /// <summary>
         /// Initializes a new instance of a IfTagDefinition.
         /// </summary>
-        public EqTagDefinition()
-            : base("eq")
-        {}
+        public LtTagDefinition()
+            : base("lt") {}
 
         /// <summary>
         /// Gets whether the tag only exists within the scope of its parent.
         /// </summary>
-        protected override bool GetIsContextSensitive()
-        {
+        protected override bool GetIsContextSensitive() {
             return false;
         }
-        
+
         /// <summary>
         /// Gets the parameters that can be passed to the tag.
         /// </summary>
         /// <returns>The parameters.</returns>
         protected override IEnumerable<TagParameter> GetParameters() {
-            return new[] {  new TagParameter(ConditionParameter) { IsRequired = true },
-                            new TagParameter(TargetValueParameter){IsRequired = true}  };
+            return new[] {
+                             new TagParameter(ConditionParameter) {IsRequired = true},
+                             new TagParameter(TargetValueParameter) {IsRequired = true}
+                         };
         }
 
-        
+
         /// <summary>
         /// Gets whether the primary generator group should be used to render the tag.
         /// </summary>
@@ -46,34 +47,18 @@ namespace Mustache {
         public override bool ShouldGeneratePrimaryGroup(Dictionary<string, object> arguments) {
             object condition = arguments[ConditionParameter];
             object targetValue = arguments[TargetValueParameter];
-            return isConditionSatisfied(condition,targetValue);
+            return isConditionSatisfied(condition, targetValue);
         }
 
-        private bool isConditionSatisfied(object condition,object targetValue) {
+        private bool isConditionSatisfied(object condition, object targetValue) {
             if (condition == null || targetValue == null) {
-                if (condition == null && targetValue == null) {
-                    return true;
-                }
                 return false;
             }
 
-         
-            if ((condition is double || condition is int) && (targetValue is double || targetValue is int) ) {
-                return Convert.ToDouble(condition) == Convert.ToDouble(targetValue);
+            if ((condition is double || condition is int) && (targetValue is double || targetValue is int)) {
+                return Convert.ToDouble(condition) < Convert.ToDouble(targetValue);
             }
 
-            if (condition is string && targetValue is string) {
-                return condition.ToString().Equals(targetValue.ToString(), StringComparison.OrdinalIgnoreCase);
-            }
-
-            if (condition is bool && targetValue is bool) {
-                return (bool) condition == (bool) targetValue;
-            }
-            
-           
-            if (condition is Char && targetValue is Char) {
-                return (Char)condition == (Char)targetValue;
-            }
 
             return false;
         }

@@ -1158,6 +1158,7 @@ Item Number: foo<br />
 
         #endregion
 
+        #region eq
 
         /// <summary>
         /// If the two values don't match, the content of an eq statement should not be printed.
@@ -1167,7 +1168,7 @@ Item Number: foo<br />
             FormatCompiler parser = new FormatCompiler();
             const string format = "Before{{#eq OneValue OtherValue}}Content{{/eq}}After";
             Generator generator = parser.Compile(format);
-            string result = generator.Render(new {OneValue = "Foo", OtherValue = "Bar"} );
+            string result = generator.Render(new { OneValue = "Foo", OtherValue = "Bar" });
             Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
         }
 
@@ -1182,6 +1183,113 @@ Item Number: foo<br />
             string result = generator.Render(new { OneValue = "Foo", OtherValue = "Foo" });
             Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
         }
+
+
+        #endregion
+
+        #region gt
+        /// <summary>
+        /// If first value is not greater than the second, the content of the gt statement should not be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Gt_EvaluatesToFalse_SkipsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#gt OneValue OtherValue}}Content{{/gt}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 10, OtherValue = 11 });
+            Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
+        }
+
+              /// <summary>
+        /// If first value is greater than the second, the content of the gt statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Gt_EvaluatesToTrue_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#gt OneValue OtherValue}}Content{{/gt}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11.11, OtherValue = 11.1 });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+        #endregion
+
+        #region lt
+        /// <summary>
+        /// If first value is not greater than the second, the content of the gt statement should not be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Lt_EvaluatesToFalse_SkipsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#lt OneValue OtherValue}}Content{{/lt}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11, OtherValue = 10.5 });
+            Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// If first value is greater than the second, the content of the gt statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Lt_EvaluatesToTrue_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#lt OneValue OtherValue}}Content{{/lt}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11.1, OtherValue = 11.11 });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+        #endregion
+
+        #region gte
+        /// <summary>
+        /// If first value is not greater than or equal to the second, the content of the gt statement should not be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Gte_EvaluatesToFalse_SkipsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#gte OneValue OtherValue}}Content{{/gte}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 9, OtherValue = 10 });
+            Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// If first value is greater than or equal to the second, the content of the gt statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Gte_EvaluatesToTrue_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#gte OneValue OtherValue}}Content{{/gte}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11.11, OtherValue = 11.11 });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+        #endregion
+
+        #region lte
+        /// <summary>
+        /// If first value is not greater than the second, the content of the gt statement should not be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Lte_EvaluatesToFalse_SkipsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#lte OneValue OtherValue}}Content{{/lte}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11, OtherValue = 10.5 });
+            Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// If first value is greater than the second, the content of the gt statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Lte_EvaluatesToTrue_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#lte OneValue OtherValue}}Content{{/lte}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = 11.11, OtherValue = 11.11 });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+        #endregion
 
 
         #region Compound Tags
