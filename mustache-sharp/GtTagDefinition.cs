@@ -55,12 +55,12 @@ namespace Mustache {
                 return false;
             }
 
-            if ((condition is double || condition is int) && (targetValue is double || targetValue is int)) {
+            try {
                 return Convert.ToDouble(condition) > Convert.ToDouble(targetValue);
+            } catch (Exception exception) {
+                return false;
             }
 
-
-            return false;
         }
 
         /// <summary>

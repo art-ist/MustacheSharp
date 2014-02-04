@@ -58,7 +58,7 @@ namespace Mustache {
             }
 
          
-            if ((condition is double || condition is int) && (targetValue is double || targetValue is int) ) {
+            if ((condition is double || condition is int) || (targetValue is double || targetValue is int) ) {
                 return Convert.ToDouble(condition) == Convert.ToDouble(targetValue);
             }
 
