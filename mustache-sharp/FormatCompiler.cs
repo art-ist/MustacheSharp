@@ -41,6 +41,9 @@ namespace Mustache
             _tagLookup.Add(newlineDefinition.Name, newlineDefinition);
             SetTagDefinition setDefinition = new SetTagDefinition();
             _tagLookup.Add(setDefinition.Name, setDefinition);
+            EqTagDefinition eqTagDefinition = new EqTagDefinition();
+            _tagLookup.Add(eqTagDefinition.Name,eqTagDefinition);
+
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace Mustache
         /// </summary>
         protected override IEnumerable<string> GetClosingTags()
         {
-            return new string[] { "if" };
+            return new string[] { "if","eq" };
         }
 
         /// <summary>

@@ -1158,6 +1158,32 @@ Item Number: foo<br />
 
         #endregion
 
+
+        /// <summary>
+        /// If the two values don't match, the content of an eq statement should not be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Eq_EvaluatesToFalse_SkipsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#eq OneValue OtherValue}}Content{{/eq}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new {OneValue = "Foo", OtherValue = "Bar"} );
+            Assert.AreEqual("BeforeAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// If the two values match, the content of an eq statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Eq_EvaluatesToTrue_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#eq OneValue OtherValue}}Content{{/eq}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { OneValue = "Foo", OtherValue = "Foo" });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+
+
         #region Compound Tags
 
         /// <summary>
