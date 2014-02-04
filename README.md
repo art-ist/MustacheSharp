@@ -95,7 +95,7 @@ The block will be printed if:
 ## The 'lt' tag
 The **lt** tag allows you to conditionally include a block of text, by comparing if two values are equal.
 
-    <span {{#lt Budget BudgetLimit}} class="overBudget" {{/lt}}>{{Budget}}</span>
+    <span {{#lt Budget BudgetLimit}} class="underBudget" {{/lt}}>{{Budget}}</span>
 
 	
 The block will be printed if:
