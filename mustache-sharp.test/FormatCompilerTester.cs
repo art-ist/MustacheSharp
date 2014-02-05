@@ -1422,5 +1422,35 @@ Odd
         }
 
         #endregion
+
+
+        #region ValueIntemplateTests
+         [TestMethod]
+        public void TestCompile_CanUseStringValueInEquals()
+        {
+            FormatCompiler compiler = new FormatCompiler();
+            const string format = @"{{#eq Value _Yesterday}}Yes!{{/eq}}";
+            Generator generator = compiler.Compile(format);
+            
+            string actual = generator.Render(new {ViewId = "Yesterday"});
+            string expected = "Yes!";
+            Assert.AreEqual(expected, actual, "The context variable was not toggled.");
+        }
+
+         [TestMethod]
+         public void TestCompile_CanUseNumericValueInEquals() {
+             FormatCompiler compiler = new FormatCompiler();
+             const string format = @"{{#eq Value _123.3231}}Yes!{{/eq}}";
+             Generator generator = compiler.Compile(format);
+
+             
+             string actual = generator.Render(new { Value = "123.3231" });
+             string expected = "";
+             Assert.AreEqual(expected, actual, "The context variable was not toggled.");
+         }
+
+        
+        #endregion
+
     }
 }

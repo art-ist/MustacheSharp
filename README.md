@@ -85,6 +85,11 @@ The **if** tag has complimentary **elif** and **else** tags. There can be as man
 The **eq** tag allows you to conditionally include a block of text, by comparing if two values are equal.
 
     {{#eq Name UserName}}Hello {{Name}} !!!{{/eq}}
+	
+You can also use specific values as the target value for comparison, rather than values from the model by prefixing the value with the "_" character:
+
+    Hello {{#eq User.Role _admin}}Maestro!{{#else}}{{Name}}{{/eq}}
+  
 
 The block will be printed if:
 * Both values are null
@@ -97,6 +102,9 @@ The **lt** tag allows you to conditionally include a block of text, by comparing
 
     <span {{#lt Budget BudgetLimit}} class="underBudget" {{/lt}}>{{Budget}}</span>
 
+Again, you can use specific values as the target for the comparison parameter, by prefixing the value with the "_" character:
+
+	<span {{#lt Budget _500}} class="underBudget" {{/lt}}>{{Budget}}</span>
 	
 The block will be printed if:
 * Both values are integers or doubles, and the first value is less than the second

@@ -67,6 +67,9 @@ namespace Mustache
                 {
                     value = contextScope.Find(pair.Value.Substring(1));
                 }
+                else if (pair.Value.StartsWith("_")) {
+                    value = pair.Value.Remove(0, 1);
+                }
                 else
                 {
                     value = keyScope.Find(pair.Value);
