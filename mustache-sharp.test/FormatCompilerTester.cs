@@ -1432,9 +1432,9 @@ Odd
             const string format = @"{{#eq Value _Yesterday}}Yes!{{/eq}}";
             Generator generator = compiler.Compile(format);
             
-            string actual = generator.Render(new {ViewId = "Yesterday"});
+            string actual = generator.Render(new {Value = "Yesterday"});
             string expected = "Yes!";
-            Assert.AreEqual(expected, actual, "The context variable was not toggled.");
+            Assert.AreEqual(expected, actual, "Value field didn't work");
         }
 
          [TestMethod]
@@ -1445,12 +1445,26 @@ Odd
 
              
              string actual = generator.Render(new { Value = "123.3231" });
+             string expected = "Yes!";
+             Assert.AreEqual(expected, actual, "Value field didn't work");
+         }
+
+         [TestMethod]
+         public void TestCompile_NonEqualNumericValue() {
+             FormatCompiler compiler = new FormatCompiler();
+             const string format = @"{{#eq Value _123.3232}}Yes!{{/eq}}";
+             Generator generator = compiler.Compile(format);
+
+
+             string actual = generator.Render(new { Value = "123.3231" });
              string expected = "";
-             Assert.AreEqual(expected, actual, "The context variable was not toggled.");
+             Assert.AreEqual(expected, actual, "Value field didn't work");
          }
 
         
         #endregion
+
+        
 
     }
 }
