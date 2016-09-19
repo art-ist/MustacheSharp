@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentCollection.cs" />
@@ -45,6 +46,8 @@
     <Compile Include="LtTagDefinition.cs" />
     <Compile Include="EqTagDefinition.cs" />
     <Compile Include="GtTagDefinition.cs" />
+    <Compile Include="UrlDecodeTagDefinition.cs" />
+    <Compile Include="UrlEncodeTagDefinition.cs" />
     <Compile Include="VariableFoundEventArgs.cs" />
     <Compile Include="SetTagDefinition.cs" />
     <Compile Include="NewlineTagDefinition.cs" />

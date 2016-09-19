@@ -52,6 +52,10 @@ namespace Mustache
             _tagLookup.Add(gteTagDefinition.Name, gteTagDefinition);
             LteTagDefinition lteTagDefinition = new LteTagDefinition();
             _tagLookup.Add(lteTagDefinition.Name, lteTagDefinition);
+            UrlEncodeTagDefinition urlEncodeTagDefinition = new UrlEncodeTagDefinition();
+            _tagLookup.Add(urlEncodeTagDefinition.Name, urlEncodeTagDefinition);
+            UrlDecodeTagDefinition urlDecodeTagDefinition = new UrlDecodeTagDefinition();
+            _tagLookup.Add(urlDecodeTagDefinition.Name,urlDecodeTagDefinition);
 
         }
 
