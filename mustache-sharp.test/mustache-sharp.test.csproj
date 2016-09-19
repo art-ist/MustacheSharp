@@ -33,6 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>mustache-sharp.test.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -44,13 +50,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FormatCompilerTester.cs" />
+    <Compile Include="HtmlFormatCompilerTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpcastDictionaryTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mustache-sharp\mustache-sharp.csproj">
-      <Project>{D71B378F-A4BA-4263-A4F0-07A49A0C528D}</Project>
+      <Project>{d71b378f-a4ba-4263-a4f0-07a49a0c528d}</Project>
       <Name>mustache-sharp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mustache-sharp.test.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

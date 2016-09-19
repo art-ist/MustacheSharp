@@ -30,6 +30,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>mustache-sharp.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
@@ -48,6 +54,15 @@
     <Compile Include="GtTagDefinition.cs" />
     <Compile Include="UrlDecodeTagDefinition.cs" />
     <Compile Include="UrlEncodeTagDefinition.cs" />
+    <Compile Include="Substitution.cs" />
+    <Compile Include="TagFormattedEventArgs.cs" />
+    <Compile Include="HtmlFormatCompiler.cs" />
+    <Compile Include="IArgument.cs" />
+    <Compile Include="NumberArgument.cs" />
+    <Compile Include="PlaceholderArgument.cs" />
+    <Compile Include="StringArgument.cs" />
+    <Compile Include="UpcastDictionary.cs" />
+    <Compile Include="VariableArgument.cs" />
     <Compile Include="VariableFoundEventArgs.cs" />
     <Compile Include="SetTagDefinition.cs" />
     <Compile Include="NewlineTagDefinition.cs" />
@@ -87,6 +102,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mustache-sharp.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
