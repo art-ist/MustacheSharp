@@ -1477,6 +1477,17 @@ Odd
         }
 
         [TestMethod]
+        public void TestCompile_UrlEncodeParam() {
+            FormatCompiler compiler = new FormatCompiler();
+            const string format = @"{{#urlencode}}{{url}}{{/urlencode}}";
+            Generator generator = compiler.Compile(format);
+
+            string actual = generator.Render(new {url="https://google.com" });
+            string expected = "https%3a%2f%2fgoogle.com";
+            Assert.AreEqual(expected, actual, "Value field didn't work");
+        }
+
+        [TestMethod]
         public void TestCompile_UrlDecode() {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"{{#urldecode}}https%3a%2f%2fgoogle.com{{/urldecode}}";
