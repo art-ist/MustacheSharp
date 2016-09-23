@@ -1365,6 +1365,31 @@ Item Number: foo<br />
             Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
         }
 
+        /// <summary>
+        /// If the two values match, the content of an eq statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Eq_EvaluatesToTrueInLoop_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#each Items}}{{#eq Name OtherValue}}Content{{/eq}}{{/each}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { Items = new List<object> { new {Name="Test"}, new { Name = "Foo" } },  OneValue = "Foo", OtherValue = "Foo" });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// If the two values match, the content of an eq statement should be printed.
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Eq_EvaluatesToTrueInLoopWithNumber_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = "Before{{#each Items}}{{#eq Name OtherValue}}Content{{/eq}}{{/each}}After";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new { Items = new List<object> { new { Name = 1 }, new { Name = 2 } }, OneValue = "1", OtherValue = "2" });
+            Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+
+
 
         #endregion
 
@@ -1707,35 +1732,7 @@ Odd
             Assert.AreEqual(expected, actual, "Value field didn't work");
         }
 
-        public class UrlEncodeTagDefinition : ContentTagDefinition
-        {
-            public UrlEncodeTagDefinition()
-                : base("urlencode")
-            {
-            }
-
-            public override IEnumerable<NestedContext> GetChildContext(TextWriter writer, Scope keyScope, Dictionary<string, object> arguments, Scope contextScope)
-            {
-                NestedContext context = new NestedContext()
-                {
-                    KeyScope = keyScope,
-                    Writer = new StringWriter(),
-                    WriterNeedsConsidated = true,
-                };
-                yield return context;
-            }
-
-            public override IEnumerable<TagParameter> GetChildContextParameters()
-            {
-                return new TagParameter[] { new TagParameter("collection") };
-            }
-
-            public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments)
-            {
-                return HttpUtility.UrlEncode(writer.ToString());
-            }
-        }
-
+     
         #endregion
     }
 }
