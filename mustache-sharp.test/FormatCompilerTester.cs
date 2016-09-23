@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mustache.Test
@@ -1690,60 +1691,11 @@ Odd
 
         #endregion
 
-        #region ValueIntemplateTests
-        [TestMethod]
-        public void TestCompile_CanUseStringValueInEquals() {
-            FormatCompiler compiler = new FormatCompiler();
-            const string format = @"{{#eq Value _Yesterday}}Yes!{{/eq}}";
-            Generator generator = compiler.Compile(format);
-
-            string actual = generator.Render(new { Value = "Yesterday" });
-            string expected = "Yes!";
-            Assert.AreEqual(expected, actual, "Value field didn't work");
-        }
+        #region Custom Tags
 
         [TestMethod]
-        public void TestCompile_CanUseNumericValueInEquals() {
-            FormatCompiler compiler = new FormatCompiler();
-            const string format = @"{{#eq Value _123.3231}}Yes!{{/eq}}";
-            Generator generator = compiler.Compile(format);
-
-
-            string actual = generator.Render(new { Value = "123.3231" });
-            string expected = "Yes!";
-            Assert.AreEqual(expected, actual, "Value field didn't work");
-        }
-
-        [TestMethod]
-        public void TestCompile_NonEqualNumericValue() {
-            FormatCompiler compiler = new FormatCompiler();
-            const string format = @"{{#eq Value _123.3232}}Yes!{{/eq}}";
-            Generator generator = compiler.Compile(format);
-
-
-            string actual = generator.Render(new { Value = "123.3231" });
-            string expected = "";
-            Assert.AreEqual(expected, actual, "Value field didn't work");
-        }
-
-
-        #endregion
-
-        #region UrlDecodeEncode
-        [TestMethod]
-        public void TestCompile_UrlEncode() {
-            FormatCompiler compiler = new FormatCompiler();
-            compiler.RegisterTag(new UrlEncodeTagDefinition(), true);
-            const string format = @"{{#urlencode}}https://google.com{{/urlencode}}";
-            Generator generator = compiler.Compile(format);
-
-            string actual = generator.Render(new { });
-            string expected = "https%3a%2f%2fgoogle.com";
-            Assert.AreEqual(expected, actual, "Value field didn't work");
-        }
-
-        [TestMethod]
-        public void TestCompile_UrlEncodeVariableText() {
+        public void TestCompile_NestedContext_ConsolidatesWriter()
+        {
             FormatCompiler compiler = new FormatCompiler();
             compiler.RegisterTag(new UrlEncodeTagDefinition(), true);
 
@@ -1751,24 +1703,39 @@ Odd
             Generator generator = compiler.Compile(format);
 
             string actual = generator.Render(new { url = "https://google.com" });
-            string expected = "https%3a%2f%2fgoogle.com";
+            string expected = HttpUtility.UrlEncode("https://google.com");
             Assert.AreEqual(expected, actual, "Value field didn't work");
         }
 
-        [TestMethod]
-        public void TestCompile_UrlDecode() {
-            FormatCompiler compiler = new FormatCompiler();
-         
-            const string format = @"{{#urldecode}}https%3a%2f%2fgoogle.com{{/urldecode}}";
-            Generator generator = compiler.Compile(format);
+        public class UrlEncodeTagDefinition : ContentTagDefinition
+        {
+            public UrlEncodeTagDefinition()
+                : base("urlencode")
+            {
+            }
 
-            string actual = generator.Render(new { });
-            string expected = "https://google.com";
-            Assert.AreEqual(expected, actual, "Value field didn't work");
+            public override IEnumerable<NestedContext> GetChildContext(TextWriter writer, Scope keyScope, Dictionary<string, object> arguments, Scope contextScope)
+            {
+                NestedContext context = new NestedContext()
+                {
+                    KeyScope = keyScope,
+                    Writer = new StringWriter(),
+                    WriterNeedsConsidated = true,
+                };
+                yield return context;
+            }
+
+            public override IEnumerable<TagParameter> GetChildContextParameters()
+            {
+                return new TagParameter[] { new TagParameter("collection") };
+            }
+
+            public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments)
+            {
+                return HttpUtility.UrlEncode(writer.ToString());
+            }
         }
-
 
         #endregion
-
     }
 }
