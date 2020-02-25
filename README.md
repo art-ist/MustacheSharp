@@ -2,7 +2,9 @@
 
 An extension of the mustache text template engine for .NET.
 
-Download using NuGet: [mustache#](http://nuget.org/packages/mustache-sharp)
+## Branches
+- **feature-compare-tags**: adds additional tags like eq, lt, gt, ... as described below.
+- **master**: contains the original version forked from [jehugaleahsa/mustache-sharp](/jehugaleahsa/mustache-sharp).
 
 ## Overview
 Generating text has always been a chore. Either you're concatenating strings like a mad man or you're getting fancy with `StringBuilder`. Either way, the logic for conditionally including values or looping over a collection really obscures the intention of the code. A more declarative approach would improve your code big time. Hey, that's why server-side scripting got popular in the first place, right?
