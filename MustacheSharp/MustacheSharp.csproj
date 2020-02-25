@@ -6,7 +6,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MustacheSharp.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
-    <AssemblyName>mustache-sharp</AssemblyName>
+    <AssemblyName>MustacheSharp</AssemblyName>
     <Authors>Truncon</Authors>
     <Description>An extension of the mustache text template engine for .NET.</Description>
     <Copyright>Copyright © 2013</Copyright>
