@@ -1,9 +1,9 @@
-# mustache#
+# MustacheSharp <sup>Plus</sup>
 
 An extension of the mustache text template engine for .NET.
 
 ## Branches
-- **feature-compare-tags**: adds additional tags like eq, lt, gt, ... as described below.
+- **master-plus**: adds additional tags like `eq`, `lt`, `gt`, ... as described below. (These tags are marked as <sup>Plus</sup>)
 - **master**: contains the original version forked from [jehugaleahsa/mustache-sharp](/jehugaleahsa/mustache-sharp).
 
 ## Overview
@@ -15,28 +15,33 @@ Generating text has always been a chore. Either you're concatenating strings lik
 
 Introducing [handlebars.js](http://handlebarsjs.com/)... If you've needed to generate any HTML templates, **handlebars.js** is a really awesome tool. Not only does it support an `if` and `each` tag, it lets you define your own tags! It also makes it easy to reference nested values `{{Customer.Address.ZipCode}}`.
 
-**mustache#** brings the power of **handlebars.js** to .NET and then takes it a little bit further. It is geared towards building ordinary text documents, rather than just HTML. It differs from **handlebars.js** in the way it handles newlines. With **mustache#**, you explicitly indicate when you want newlines - actual newlines are ignored.
+**MustacheSharp** (aka. **mustache#**, **mustache-sharp**) brings the power of **handlebars.js** to .NET and then takes it a little bit further. It is geared towards building ordinary text documents, rather than just HTML. It differs from **handlebars.js** in the way it handles newlines. With **MustacheSharp**, you explicitly indicate when you want newlines - actual newlines are ignored.
 
-    Hello, {{Customer.Name}}
+```handlebars
+Hello, {{Customer.Name}}
+{{#newline}}
+{{#newline}}
+{{#with Order}}
+{{#if LineItems}}
+Here is a summary of your previous order:
+{{#newline}}
+{{#newline}}
+{{#each LineItems}}
+    {{ProductName}}: {{UnitPrice:C}} x {{Quantity}}
     {{#newline}}
-    {{#newline}}
-    {{#with Order}}
-    {{#if LineItems}}
-    Here is a summary of your previous order:
-    {{#newline}}
-    {{#newline}}
-    {{#each LineItems}}
-        {{ProductName}}: {{UnitPrice:C}} x {{Quantity}}
-        {{#newline}}
-    {{/each}}
-    {{#newline}}
-    Your total was {{Total:C}}.
-    {{#else}}
-    You do not have any recent purchases.
-    {{/if}}
-    {{/with}}
-    
-Most of the lines in the previous example will never appear in the final output. This allows you to use **mustache#** to write templates for normal text, not just HTML/XML.
+{{/each}}
+{{#newline}}
+Your total was {{Total:C}}.
+{{#else}}
+You do not have any recent purchases.
+{{/if}}
+{{/with}}
+```
+
+Most of the lines in the previous example will never appear in the final output. This allows you to use **MustacheSharp** to write templates for normal text, not just HTML/XML.
+
+**MustacheSharp <sup>Plus</sup>** is a fork of the MustacheSharp engine that adds some basic logic (eq, lt, gt, lte, gte) and some other tags.
+
 
 ## Placeholders
 The placeholders can be any valid identifier. These map to the property names in your classes (or `Dictionary` keys).
@@ -44,33 +49,41 @@ The placeholders can be any valid identifier. These map to the property names in
 ### Formatting Placeholders
 Each format item takes the following form and consists of the following components:
 
-    {{identifier[,alignment][:formatString]}}
+```handlebars
+{{identifier[,alignment][:formatString]}}
+```
 
 The matching braces are required. Notice that they are double curly braces! The alignment and the format strings are optional and match the syntax accepted by `String.Format`. Refer to [String.Format](http://msdn.microsoft.com/en-us/library/system.string.format.aspx)'s documentation to learn more about the standard and custom format strings.
 
 ### Placeholder Scope
 The identifier is used to find a property with a matching name. If you want to print out the object itself, you can use the special identifier `this`.
 
-    FormatCompiler compiler = new FormatCompiler();
-    Generator generator = compiler.Compile("Hello, {{this}}!!!");
-    string result = generator.Render("Bob");
-    Console.Out.WriteLine(result);  // Hello, Bob!!!
-    
+```cs
+FormatCompiler compiler = new FormatCompiler();
+Generator generator = compiler.Compile("Hello, {{this}}!!!");
+string result = generator.Render("Bob");
+Console.Out.WriteLine(result);  // Hello, Bob!!!
+```
+
 Some tags, such as `each` and `with`, change which object the values will be retrieved from.
 
 If a property with the placeholder name can't be found at the current scope, the name will be searched for at the next highest level.
 
-**mustache#** will automatically detect when an object is a dictionary and search for a matching key. In this case, it still needs to be a valid identifier name.
+**MustacheSharp** will automatically detect when an object is a dictionary and search for a matching key. In this case, it still needs to be a valid identifier name.
 
 ### Nested Placeholders
 If you want to grab a nested property, you can separate identifiers using `.`.
 
-    {{Customer.Address.ZipCode}}
+```handlebars
+{{Customer.Address.ZipCode}}
+```
 
 ## The 'if' tag
 The **if** tag allows you to conditionally include a block of text.
 
-    Hello{{#if Name}}, {{Name}}{{/if}}!!!
+```handlebars
+Hello{{#if Name}}, {{Name}}{{/if}}!!!
+```
 
 The block will be printed if:
 * The value is a non-empty string.
@@ -81,17 +94,23 @@ The block will be printed if:
 
 The **if** tag has complimentary **elif** and **else** tags. There can be as many **elif** tags as desired but the **else** tag must appear only once and after all other tags.
 
-    {{#if Male}}Mr.{{#elif Married}}Mrs.{{#else}}Ms.{{/if}}
+```handlebars
+{{#if Male}}Mr.{{#elif Married}}Mrs.{{#else}}Ms.{{/if}}
+```
 
-## The 'eq' tag
+## The 'eq' tag <sup>Plus</sup>
 The **eq** tag allows you to conditionally include a block of text, by comparing if two values are equal.
 
-    {{#eq Name UserName}}Hello {{Name}} !!!{{/eq}}
-	
+```handlebars
+{{#eq Name UserName}}Hello {{Name}} !!!{{/eq}}
+```
+
 You can also use specific values as the target value for comparison, rather than values from the model by prefixing the value with the "_" character:
 
-    Hello {{#eq User.Role _admin}}Maestro!{{#else}}{{Name}}{{/eq}}
-  
+```handlebars
+Hello {{#eq User.Role _admin}}Maestro!{{#else}}{{Name}}{{/eq}}
+```
+
 
 The block will be printed if:
 * Both values are null
@@ -99,101 +118,115 @@ The block will be printed if:
 * Both values are integers or doubles, and are equal
 * Both values are boolean, and are equal
 
-## The 'lt' tag
+## The 'lt' tag <sup>Plus</sup>
 The **lt** tag allows you to conditionally include a block of text, if the first value is less than the second value.
 
-    <span {{#lt Budget BudgetLimit}} class="underBudget" {{/lt}}>{{Budget}}</span>
+```handlebars
+<span {{#lt Budget BudgetLimit}} class="underBudget" {{/lt}}>{{Budget}}</span>
+```
 
 Again, you can use specific values as the target for the comparison parameter, by prefixing the value with the "_" character:
 
-	<span {{#lt Budget _500}} class="underBudget" {{/lt}}>{{Budget}}</span>
-	
+```handlebars
+<span {{#lt Budget _500}} class="underBudget" {{/lt}}>{{Budget}}</span>
+```
+
 The block will be printed if:
 * Both values are integers or doubles, and the first value is less than the second
 
-## The 'lte', 'gt', 'gte' tags
+## The 'lte', 'gt', 'gte' tags <sup>Plus</sup>
 These tags work in the same way as the 'lt' tag, ('lte' = less than or equal to).
 
-	
+
 ## The 'each' tag
 If you need to print out a block of text for each item in a collection, use the **each** tag.
 
-    {{#each Customers}}
-    Hello, {{Name}}!!
-    {{/each}}
-    
+```handlebars
+{{#each Customers}}
+Hello, {{Name}}!!
+{{/each}}
+```
+
 Within the context of the **each** block, the scope changes to the current item. So, in the example above, `Name` would refer to a property in the `Customer` class.
 
 Additionally, you can access the current index into the collection being enumerated using the **index** tag.
 
-    <ul>
-    {{#each Items}}
-        <li class="list-item{{#index}}" value="{{Value}}">{{Description}}</li>
-    {{/each}}
-    </ul>
-    
+```handlebars
+<ul>
+{{#each Items}}
+    <li class="list-item{{#index}}" value="{{Value}}">{{Description}}</li>
+{{/each}}
+</ul>
+```
+
 This will build an HTML list, building a list of items with `Description` and `Value` properties. Additionally, the `index` tag is used to create a CSS class with increasing numbers.
-    
+
 ## The 'with' tag
 Within a block of text, you may refer to a same top-level placeholder over and over. You can cut down the amount of text by using the **with** tag.
 
-    {{#with Customer.Address}}
-    {{FirstName}} {{LastName}}
-    {{Line1}}
-    {{#if Line2}}
-    {{Line2}}
-    {{/if}}
-    {{#if Line3}}
-    {{Line3}}
-    {{/if}}
-    {{City}} {{State}}, {{ZipCode}}
-    {{/with}}
-    
+```handlebars
+{{#with Customer.Address}}
+{{FirstName}} {{LastName}}
+{{Line1}}
+{{#if Line2}}
+{{Line2}}
+{{/if}}
+{{#if Line3}}
+{{Line3}}
+{{/if}}
+{{City}} {{State}}, {{ZipCode}}
+{{/with}}
+```
+
 Here, the `Customer.Address` property will be searched first for the placeholders. If a property cannot be found in the `Address` object, it will be searched for in the `Customer` object and on up.
 
 ## The 'set' tag
-**mustache#** provides limited support for variables through use of the `set` tag. Once a variable is declared, it is visible to all child scopes. Multiple definitions of a variable with the same name cannot be created within the same scope. In fact, I highly recommend making variable names unique to the entire template just to prevent unexpected behavior!
+**MustacheSharp** provides limited support for variables through use of the `set` tag. Once a variable is declared, it is visible to all child scopes. Multiple definitions of a variable with the same name cannot be created within the same scope. In fact, I highly recommend making variable names unique to the entire template just to prevent unexpected behavior!
 
 The following example will print out "EvenOddEvenOdd" by toggling a variable called `even`:
 
-    FormatCompiler compiler = new FormatCompiler();
-    const string format = @"{{#set even}}
-    {{#each this}}
-    {{#if @even}}
-    Even
-    {{#else}}
-    Odd
-    {{/if}}
-    {{#set even}}
-    {{/each}}";
-    Generator generator = compiler.Compile(format);
-    generator.ValueRequested += (sender, e) =>
-    {
-        e.Value = !(bool)(e.Value ?? false);
-    };
-    string result = generator.Render(new int[] { 0, 1, 2, 3 });
-    
+```cs
+FormatCompiler compiler = new FormatCompiler();
+const string format = @"{{#set even}}
+{{#each this}}
+{{#if @even}}
+Even
+{{#else}}
+Odd
+{{/if}}
+{{#set even}}
+{{/each}}";
+Generator generator = compiler.Compile(format);
+generator.ValueRequested += (sender, e) =>
+{
+    e.Value = !(bool)(e.Value ?? false);
+};
+string result = generator.Render(new int[] { 0, 1, 2, 3 });
+```
+
 This code works by specifying a function to call whenever a value is needed for the `even` variable. The first time the function is called, `e.Value` will be null. All additional calls will hold the last known value of the variable.
 
 Notice that when you set the variable, you don't qualify it with an `@`. You only need the `@` when you request its value, like in the `if` statement above.
-    
+
 You should attempt to limit your use of variables within templates. Instead, perform as many up-front calculations as possible and make sure your view model closely represents its final appearance. In this case, it would make more sense to first convert the array into strings of "Even" and "Odd".
 
-    FormatCompiler compiler = new FormatCompiler();
-    const string format = @"{{#each this}}{{this}}{{/each}}";
-    Generator generator = compiler.Compile(format);
-    string result = generator.Render(new string[] { "Even", "Odd", "Even", "Odd" });
+```cs
+FormatCompiler compiler = new FormatCompiler();
+const string format = @"{{#each this}}{{this}}{{/each}}";
+Generator generator = compiler.Compile(format);
+string result = generator.Render(new string[] { "Even", "Odd", "Even", "Odd" });
+```
 
 This code is much easier to read and understand. It is also going to run significantly faster. In cases where you also need the original value, you can create an array containing objects with properties for the original value *and* `Even`/`Odd`.
 
 ## Defining Your Own Tags
-If you need to define your own tags, **mustache#** has everything you need.
+If you need to define your own tags, **MustacheSharp** has everything you need.
 
 Once you define your own tags, you can register them with the compiler using the `RegisterTag` method.
 
     FormatCompiler compiler = new FormatCompiler();
     compiler.RegisterTag(myTag);
-    
+
 Your tag can be referenced within the template by leading its name with a `#`.
 
 Custom tags can take any number of parameters. Parameters can have default values if you don't want to pass them all the time. Arguments are passed by specifying a placeholder.
@@ -201,69 +234,75 @@ Custom tags can take any number of parameters. Parameters can have default value
 ### Multi-line Tags
 Here's an example of a tag that will make all of its content upper case:
 
-    public class UpperTagDefinition : ContentTagDefinition
+```cs
+public class UpperTagDefinition : ContentTagDefinition
+{
+    public UpperTagDefinition()
+        : base("upper")
     {
-        public UpperTagDefinition()
-            : base("upper")
-        {
-        }
-        
-        public override IEnumerable<NestedContext> GetChildContext(TextWriter writer, KeyScope scope, Dictionary<string, object> arguments)
-        {
-            NestedContext context = new NestedContext() 
-            { 
-                KeyScope = scope, 
-                Writer = new StringWriter(), 
-                WriterNeedsConsolidated = true,
-            };
-            yield return context;
-        }
-        
-        public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments)
-        {
-            return writer.ToString().ToUpperInvariant();
-        }
     }
-    
+
+    public override IEnumerable<NestedContext> GetChildContext(TextWriter writer, KeyScope scope, Dictionary<string, object> arguments)
+    {
+        NestedContext context = new NestedContext()
+        {
+            KeyScope = scope,
+            Writer = new StringWriter(),
+            WriterNeedsConsolidated = true,
+        };
+        yield return context;
+    }
+
+    public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments)
+    {
+        return writer.ToString().ToUpperInvariant();
+    }
+}
+```
+
 Another solution is to wrap the given TextWriter with another TextWriter that will change the case of the strings passed to it. This approach requires more work, but would be more efficient. You should attempt to wrap or reuse the text writer passed to the tag.
-    
+
 ### In-line Tags
 Here's an example of a tag that will join the items of a collection:
 
-    public class JoinTagDefinition : InlineTagDefinition
+```cs
+public class JoinTagDefinition : InlineTagDefinition
+{
+    public JoinTagDefinition()
+        : base("join")
     {
-        public JoinTagDefinition()
-            : base("join")
-        {
-        }
-        
-        protected override IEnumerable<TagParameter> GetParameters()
-        {
-            return new TagParameter[] { new TagParameter("collection") };
-        }
-        
-        protected override void GetText(TextWriter writer, Dictionary<string, object> arguments)
-        {
-            IEnumerable collection = (IEnumerable)arguments["collection"];
-            string joined = String.Join(", ", collection.Cast<object>().Select(o => o.ToString()));
-            writer.Write(joined);
-        }
     }
-    
+
+    protected override IEnumerable<TagParameter> GetParameters()
+    {
+        return new TagParameter[] { new TagParameter("collection") };
+    }
+
+    protected override void GetText(TextWriter writer, Dictionary<string, object> arguments)
+    {
+        IEnumerable collection = (IEnumerable)arguments["collection"];
+        string joined = String.Join(", ", collection.Cast<object>().Select(o => o.ToString()));
+        writer.Write(joined);
+    }
+}
+```
+
 ## HTML Support
-**mustache#** was not originally designed to exclusively generate HTML. However, it is by far the most common use of **mustache#**. For that reason, there is a separate `HtmlFormatCompiler` class that will automatically configure the code to work with HTML documents. Particularly, this class will eliminate most newlines and escape any special HTML characters that might appear within the substituted values.
+**MustacheSharp** was not originally designed to exclusively generate HTML. However, it is by far the most common use of **MustacheSharp**. For that reason, there is a separate `HtmlFormatCompiler` class that will automatically configure the code to work with HTML documents. Particularly, this class will eliminate most newlines and escape any special HTML characters that might appear within the substituted values.
 
 If you really need to embed HTML values, you can wrap placeholders in triple quotes rather than double quotes.
 
-    HtmlFormatCompiler compiler = new HtmlFormatCompiler();
-    const string format = @"<html><body>{{escaped}} and {{{unescaped}}}</body></html>";
-    Generator generator = compiler.Compile(format);
-    string result = generator.Render(new
-    {
-        escaped = "<b>Awesome</b>",
-        unescaped = "<i>sweet</i>"
-    });
-    // Generates <html><body>&lt;b&gt;Awesome&lt;/b&gt; and <i>sweet</i></body></html>
+```cs
+HtmlFormatCompiler compiler = new HtmlFormatCompiler();
+const string format = @"<html><body>{{escaped}} and {{{unescaped}}}</body></html>";
+Generator generator = compiler.Compile(format);
+string result = generator.Render(new
+{
+    escaped = "<b>Awesome</b>",
+    unescaped = "<i>sweet</i>"
+});
+// Generates <html><body>&lt;b&gt;Awesome&lt;/b&gt; and <i>sweet</i></body></html>
+```
 
 ## License
 This is free and unencumbered software released into the public domain.
