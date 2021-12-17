@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
 
-namespace Mustache {
+namespace Mustache
+{
 
     public class UrlEncodeTagDefinition : ContentTagDefinition {
         public UrlEncodeTagDefinition()
@@ -19,14 +16,14 @@ namespace Mustache {
                 WriterNeedsConsidated = true,
             };
             yield return context;
-        } 
+        }
 
         public override IEnumerable<TagParameter> GetChildContextParameters() {
             return new TagParameter[] { new TagParameter("collection") };
         }
 
         public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments) {
-            return HttpUtility.UrlEncode(writer.ToString());
+            return System.Net.WebUtility.UrlEncode(writer.ToString());
         }
     }
 }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
 
-namespace Mustache {
+namespace Mustache
+{
     class UrlDecodeTagDefinition: ContentTagDefinition {
         public UrlDecodeTagDefinition()
             : base("urldecode") {
@@ -25,7 +22,7 @@ namespace Mustache {
         }
 
         public override string ConsolidateWriter(TextWriter writer, Dictionary<string, object> arguments) {
-            return HttpUtility.UrlDecode(writer.ToString());
+            return System.Net.WebUtility.UrlDecode(writer.ToString());
         }
     }
 }

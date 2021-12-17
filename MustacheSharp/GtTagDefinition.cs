@@ -57,7 +57,7 @@ namespace Mustache {
 
             try {
                 return Convert.ToDouble(condition) > Convert.ToDouble(targetValue);
-            } catch (Exception exception) {
+            } catch (Exception /* ex */) {
                 return false;
             }
 
