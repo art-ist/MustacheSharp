@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace Mustache {
     /// <summary>
@@ -55,6 +56,10 @@ namespace Mustache {
             if (condition == null || targetValue == null) {
                 return false;
             }
+
+            // get the actual value of Newtonsoft's JValue
+            if( condition is JValue cjv ) { condition = cjv.Value; }
+            if( targetValue is JValue tjv ) { targetValue = tjv.Value; }
 
             try {
                 return Convert.ToDouble(condition) < Convert.ToDouble(targetValue);

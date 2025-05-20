@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Mustache {
     /// <summary>
@@ -24,7 +25,7 @@ namespace Mustache {
         {
             return false;
         }
-        
+
         /// <summary>
         /// Gets the parameters that can be passed to the tag.
         /// </summary>
@@ -34,7 +35,7 @@ namespace Mustache {
                             new TagParameter(TargetValueParameter){IsRequired = true}  };
         }
 
-        
+
         /// <summary>
         /// Gets whether the primary generator group should be used to render the tag.
         /// </summary>
@@ -49,7 +50,11 @@ namespace Mustache {
             return isConditionSatisfied(condition,targetValue);
         }
 
-        private bool isConditionSatisfied(object condition,object targetValue) {
+        private bool isConditionSatisfied(object condition, object targetValue) {
+            // get the actual value of Newtonsoft's JValue
+            if( condition is JValue cjv ) { condition = cjv.Value; }
+            if( targetValue is JValue tjv ) { targetValue = tjv.Value; }
+
             if (condition == null || targetValue == null) {
                 if (condition == null && targetValue == null) {
                     return true;
@@ -57,7 +62,6 @@ namespace Mustache {
                 return false;
             }
 
-         
             if ((condition is double || condition is int) || (targetValue is double || targetValue is int) ) {
                 return Convert.ToDouble(condition) == Convert.ToDouble(targetValue);
             }
@@ -66,13 +70,12 @@ namespace Mustache {
                 return condition.ToString().Equals(targetValue.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            if (condition is bool && targetValue is bool) {
-                return (bool) condition == (bool) targetValue;
+            if (condition is bool boolCondition && targetValue is bool boolValue) {
+                return boolCondition == boolValue;
             }
-            
-           
-            if (condition is Char && targetValue is Char) {
-                return (Char)condition == (Char)targetValue;
+
+            if (condition is Char charCondition && targetValue is Char charValue) {
+                return charCondition == charValue;
             }
 
             return false;

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace Mustache
 {
@@ -65,6 +67,19 @@ namespace Mustache
 
         private bool isConditionSatisfied(object condition)
         {
+            // get the actual value of Newtonsoft's JValue
+            if( condition is JValue jv ) {
+                condition = jv.Value;
+            }
+            // // to avoid a dependency on Newtonsoft.Json (see: .csproj) we could use this reflection based aproach and still get JValue's actual value
+            // Type conditionType = condition?.GetType();
+            // // Serilog.Log.Verbose("MustacheSharp #if isConditionSatisfied {0} : {@1}", conditionType?.Name, condition);
+            // // if we have a dictionary, let's get the value
+            // if (conditionType?.Name == "JValue") {
+            //     condition = conditionType.GetProperty("Value").GetValue(condition);
+            //     // Serilog.Log.Verbose("MustacheSharp  JValue : {@0}", condition);
+            // }
+
             if (condition == null || condition == DBNull.Value)
             {
                 return false;
@@ -77,6 +92,7 @@ namespace Mustache
             {
                 return (Char)condition != '\0';
             }
+
             try
             {
                 decimal number = (decimal)Convert.ChangeType(condition, typeof(decimal));
