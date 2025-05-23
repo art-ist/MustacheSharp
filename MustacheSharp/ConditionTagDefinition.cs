@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace Mustache
