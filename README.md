@@ -105,10 +105,11 @@ The **eq** tag allows you to conditionally include a block of text, by comparing
 {{#eq Name UserName}}Hello {{Name}} !!!{{/eq}}
 ```
 
-You can also use specific values as the target value for comparison, rather than values from the model by prefixing the value with the "_" character:
+You can also use specific values as the target value for comparison, rather than values from the model by using numbers e.g. 500 or 3.14 or using single quotes. To compare boolean values you can either use the #if tag or use 'true' or 'false'.:
 
 ```handlebars
-Hello {{#eq User.Role _admin}}Maestro!{{#else}}{{Name}}{{/eq}}
+Hello {{#eq User.Role 'admin'}}Maestro!{{#else}}{{Name}}{{/eq}}
+{{#eq User.IsSuperUser 'true'}}You have priviged access.{{/eq}}
 ```
 
 
@@ -125,10 +126,10 @@ The **lt** tag allows you to conditionally include a block of text, if the first
 <span {{#lt Budget BudgetLimit}} class="underBudget" {{/lt}}>{{Budget}}</span>
 ```
 
-Again, you can use specific values as the target for the comparison parameter, by prefixing the value with the "_" character:
+Again, you can use specific values as the target for the comparison parameter, by using numbers (e.g. 500 or 3.14):
 
 ```handlebars
-<span {{#lt Budget _500}} class="underBudget" {{/lt}}>{{Budget}}</span>
+<span {{#lt Budget 500}} class="underBudget" {{/lt}}>{{Budget}}</span>
 ```
 
 The block will be printed if:
