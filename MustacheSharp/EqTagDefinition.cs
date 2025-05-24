@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Mustache {
@@ -11,7 +10,7 @@ namespace Mustache {
         private const string ConditionParameter = "condition";
         private const string TargetValueParameter = "targetValue";
 
-         /// <summary>
+        /// <summary>
         /// Initializes a new instance of a IfTagDefinition.
         /// </summary>
         public EqTagDefinition()
@@ -51,10 +50,7 @@ namespace Mustache {
         }
 
         private bool isConditionSatisfied(object condition, object targetValue) {
-            // get the actual value of Newtonsoft's JValue
-            if( condition is JValue cjv ) { condition = cjv.Value; }
-            if( targetValue is JValue tjv ) { targetValue = tjv.Value; }
-
+            // hanle nulls
             if (condition == null || targetValue == null) {
                 if (condition == null && targetValue == null) {
                     return true;
@@ -62,23 +58,21 @@ namespace Mustache {
                 return false;
             }
 
-            if ((condition is double || condition is int) || (targetValue is double || targetValue is int) ) {
-                return Convert.ToDouble(condition) == Convert.ToDouble(targetValue);
+            // get the actual value of Newtonsoft's JValue
+            if (condition is JValue cjv) { condition = cjv.Value; }
+            if (targetValue is JValue tjv) { targetValue = tjv.Value; }
+
+            // allow to compare a boolean value with the strings 'true' and 'false'
+            if ((condition is bool && targetValue is string) || (condition is string && targetValue is bool)) {
+                return string.Equals(condition.ToString(), targetValue.ToString(), StringComparison.OrdinalIgnoreCase);
             }
 
-            if (condition is string && targetValue is string) {
-                return condition.ToString().Equals(targetValue.ToString(), StringComparison.OrdinalIgnoreCase);
+            // allow to arithmetically compare numbers of different types
+            if (condition.IsNumeric() && targetValue.IsNumeric()) {
+                return Convert.ToDecimal(condition) == Convert.ToDecimal(targetValue);
             }
 
-            if (condition is bool boolCondition && targetValue is bool boolValue) {
-                return boolCondition == boolValue;
-            }
-
-            if (condition is Char charCondition && targetValue is Char charValue) {
-                return charCondition == charValue;
-            }
-
-            return false;
+            return object.Equals(condition, targetValue);
         }
 
         /// <summary>

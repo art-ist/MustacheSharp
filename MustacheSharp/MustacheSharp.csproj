@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>NET48;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
     <RootNamespace>Mustache</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MustacheSharp.snk</AssemblyOriginatorKeyFile>
@@ -20,9 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="Serilog" Version="2.12.0" /> -->                  <!-- use for debugging only -->
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />                   <!-- when using the reflection based check to support JValue, we could remove this dependency (see: ConditionTagDefinition.cs) -->
-    <!-- <PackageReference Include="SixLabors.ImageSharp" Version="2.1.10" /> -->     <!-- Transitive dependency. Make shure, the desired version is always included. OBSOLETE, I guess we don't need that here -->
+    <!-- when using the reflection based check to support JValue, we could remove this dependency (see: ConditionTagDefinition.cs) -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- use for debugging only -->
+    <!-- <PackageReference Include="Serilog" Version="2.12.0" /> -->
   </ItemGroup>
 
   <ItemGroup>
