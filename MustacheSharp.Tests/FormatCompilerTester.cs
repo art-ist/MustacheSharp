@@ -65,8 +65,7 @@ namespace Mustache.Test
             const string format = @"Hello{{#newline}}
     ";
 
-            const string expected = @"Hello
-    ";
+            string expected = $@"Hello{Environment.NewLine}";
             Generator generator = compiler.Compile(format);
             string result = generator.Render(null);
             Assert.AreEqual(expected, result, "The wrong text was generated.");
@@ -210,7 +209,7 @@ namespace Mustache.Test
         }
 
         /// <summary>
-        /// If we specify a positive alignment with a key with an optional + character, 
+        /// If we specify a positive alignment with a key with an optional + character,
         /// the alignment should be used when rending the value.
         /// </summary>
         [TestMethod]
@@ -277,8 +276,7 @@ namespace Mustache.Test
 After";
             Generator generator = compiler.Compile(format);
             string result = generator.Render("Content");
-            const string expected = @"Content
-After";
+            string expected = $@"Content{Environment.NewLine}After";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -294,8 +292,7 @@ After";
 {{this}}";
             Generator generator = compiler.Compile(format);
             string result = generator.Render("Content");
-            const string expected = @"
-Content";
+            string expected = $@"{Environment.NewLine}Content";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -327,8 +324,7 @@ Content";
 {{this}}";
             Generator generator = compiler.Compile(format);
             string result = generator.Render("Content");
-            const string expected = @"Content
-Content";
+            string expected = $@"Content{Environment.NewLine}Content";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -620,7 +616,7 @@ Content";
         {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"Before
-    {{#! This is a comment }}    
+    {{#! This is a comment }}
 After";
             Generator generator = compiler.Compile(format);
             string result = generator.Render(new object());
@@ -637,7 +633,7 @@ After";
         {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"Before
-    {{#! This is a comment }}    {{#! This is another comment }}    
+    {{#! This is a comment }}    {{#! This is another comment }}
 After";
             Generator generator = compiler.Compile(format);
             string result = generator.Render(new object());
@@ -654,15 +650,14 @@ After";
         {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"Before
-    {{#! This is a comment }}    
-    {{#! This is another comment }}    
+    {{#! This is a comment }}
+    {{#! This is another comment }}
     {{#newline}}
     {{#! This is the final comment }}
 After";
             Generator generator = compiler.Compile(format);
             string result = generator.Render(new object());
-            const string expected = @"Before                    
-    After";
+            string expected = $@"Before{Environment.NewLine}After";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -757,8 +752,7 @@ Middle
 {{#! comment }}";
             Generator generator = compiler.Compile(format);
             string result = generator.Render(null);
-            const string expected = @"First
-Middle";
+            string expected = $@"First{Environment.NewLine}Middle";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -1037,8 +1031,7 @@ Last
 {{/if}}";
             Generator generator = parser.Compile(format);
             string result = generator.Render(true);
-            const string expected = @"First
-Last";
+            string expected = $@"First{Environment.NewLine}Last";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -1076,8 +1069,7 @@ First
 Last";
             Generator generator = parser.Compile(format);
             string result = generator.Render(true);
-            const string expected = @"First
-Last";
+            string expected = $@"First{Environment.NewLine}Last";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -1268,13 +1260,13 @@ Item Number: foo<br />{{#newline}}
             Generator generator = compiler.Compile(template);
             string actual = generator.Render(objects);
 
-            const string expected = @"Item Number: 0<br />
-Item Number: 1<br />
-Item Number: 2<br />
-Item Number: foo<br />
-Item Number: foo<br />
-Item Number: foo<br />
-";
+            string expected = "Item Number: 0<br />"+Environment.NewLine
+                            + "Item Number: 1<br />" + Environment.NewLine
+                            + "Item Number: 2<br />" + Environment.NewLine
+                            + "Item Number: foo<br />" + Environment.NewLine
+                            + "Item Number: foo<br />" + Environment.NewLine
+                            + "Item Number: foo<br />" + Environment.NewLine
+            ;
 
             Assert.AreEqual(expected, actual, "The wrong text was found.");
         }
@@ -1308,7 +1300,7 @@ Item Number: foo<br />
         #region Default Parameter
 
         /// <summary>
-        /// If a tag is defined with a default parameter, the default value 
+        /// If a tag is defined with a default parameter, the default value
         /// should be returned if an argument is not provided.
         /// </summary>
         [TestMethod]
@@ -1390,6 +1382,25 @@ Item Number: foo<br />
             Generator generator = parser.Compile(format);
             string result = generator.Render(new { Items = new List<object> { new { Name = 1 }, new { Name = 2 } }, OneValue = "1", OtherValue = "2" });
             Assert.AreEqual("BeforeContentAfter", result, "The wrong text was generated.");
+        }
+
+        /// <summary>
+        /// Compare .
+        /// </summary>
+        [TestMethod]
+        public void TestCompile_Eq_EvaluatesConstantValues_PrintsContent() {
+            FormatCompiler parser = new FormatCompiler();
+            const string format = @"Category 'IT': {{#eq Category 'IT'}}YES{{#else}}NO{{/eq}}
+, 1 1: {{#eq 1 1}}YES{{#else}}NO{{/eq}}
+, 1.0 1: {{#eq 1.0 1}}YES{{#else}}NO{{/eq}}
+, 1 '1': {{#eq 1 '1'}}YES{{#else}}NO{{/eq}}
+, IsTech 'true': {{#eq IsTech 'true'}}YES{{#else}}NO{{/eq}}";
+            Generator generator = parser.Compile(format);
+            string result = generator.Render(new {
+                Category = "IT",
+                IsTech = true
+            });
+            Assert.AreEqual("Category 'IT': YES, 1 1: YES, 1.0 1: YES, 1 '1': NO, IsTech 'true': YES", result, "The wrong text was generated.");
         }
 
 
@@ -1526,14 +1537,14 @@ Your order total was: {{Total:C}}
 {{/if}}
 {{/with}}";
             Generator generator = compiler.Compile(format);
-            
+
             string result = generator.Render(CultureInfo.GetCultureInfo("en-US"), new
             {
                 Customer = new { FirstName = "Bob" },
                 Order = new
                 {
                     Total = 7.50m,
-                    LineItems = new object[] 
+                    LineItems = new object[]
                     {
                         new { Name = "Banana", UnitPrice = 2.50m, Quantity = 1 },
                         new { Name = "Orange", UnitPrice = .50m, Quantity = 5 },
@@ -1541,15 +1552,16 @@ Your order total was: {{Total:C}}
                     }
                 }
             });
-            const string expected = @"Hello Bob:
-
-Below are your order details:
-
-    Banana: $2.50 x 1
-    Orange: $0.50 x 5
-    Apple: $0.25 x 10
-
-Your order total was: $7.50";
+            string expected = "Hello Bob:"
+                            + Environment.NewLine
+                            + Environment.NewLine
+                            + "Below are your order details:" + Environment.NewLine
+                            + Environment.NewLine
+                            + "    Banana: $2.50 x 1" + Environment.NewLine
+                            + "    Orange: $0.50 x 5" + Environment.NewLine
+                            + "    Apple: $0.25 x 10" + Environment.NewLine
+                            + Environment.NewLine
+                            + "Your order total was: $7.50";
             Assert.AreEqual(expected, result, "The wrong text was generated.");
         }
 
@@ -1640,7 +1652,7 @@ Odd
         /// they should not be removed from the output.
 		/// </summary>
 		[TestMethod]
-		public void TestCompile_PreserveNewLines() 
+		public void TestCompile_PreserveNewLines()
         {
 		    FormatCompiler compiler = new FormatCompiler();
 		    compiler.RemoveNewLines = false;
@@ -1687,11 +1699,11 @@ Odd
         }
 
         [TestMethod]
-        public void TestCompile_EmptyStringProperty() 
+        public void TestCompile_EmptyStringProperty()
         {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"{{Greeting}} {{Name}}";
-            var data = new 
+            var data = new
             {
                 Greeting = "Hello",
                 Name = ""
@@ -1706,7 +1718,7 @@ Odd
         public void TestCompile_NullValueProperty() {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"{{Greeting}} {{Name}}";
-            var data = new 
+            var data = new
             {
                 Greeting = "Hello",
                 Name = (String)null
@@ -1721,7 +1733,7 @@ Odd
         public void TestCompile_AllowSingleCurlyBracesInData() {
             FormatCompiler compiler = new FormatCompiler();
             const string format = @"See this code: {{Code}}!";
-            var data = new 
+            var data = new
             {
                 Code = "function() { retrurn 'this is evil'; }"
             };
@@ -1781,7 +1793,7 @@ Odd
             Assert.AreEqual(expected, actual, "Value field didn't work");
         }
 
-     
+
         #endregion
     }
 }
